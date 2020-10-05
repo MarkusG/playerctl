@@ -43,6 +43,8 @@ static gint exit_status = 0;
 static gchar *player_arg = NULL;
 /* A comma separated list of players to ignore. */
 static gchar *ignore_player_arg = NULL;
+/* If true, wait for input to control players */
+static gboolean interactive_arg;
 /* If true, control all available media players */
 static gboolean select_all_players;
 /* If true, list all available players' names and exit. */
@@ -793,6 +795,8 @@ static const GOptionEntry entries[] = {
      "Select all available players to be controlled", NULL},
     {"ignore-player", 'i', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING, &ignore_player_arg,
      "A comma separated list of names of players to ignore.", "IGNORE"},
+    {"interactive", 'I', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE, &interactive_arg,
+     "Run playerctl in interactive mode.", NULL},
     {"format", 'f', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING, &format_string_arg,
      "A format string for printing properties and metadata", NULL},
     {"follow", 'F', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE, &follow,
