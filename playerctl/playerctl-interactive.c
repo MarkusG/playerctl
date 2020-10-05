@@ -23,7 +23,7 @@
 
 #include "playerctl-player.h"
 
-int handle_interactive(PlayerctlPlayer *player) {
+int init_interactive(PlayerctlPlayer *player) {
 	// get input character-by-character
 	struct termios old, new;
 	tcgetattr(STDIN_FILENO, &new);

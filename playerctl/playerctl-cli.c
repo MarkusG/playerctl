@@ -45,7 +45,7 @@ static gchar *player_arg = NULL;
 /* A comma separated list of players to ignore. */
 static gchar *ignore_player_arg = NULL;
 /* If true, wait for input to control players */
-static gboolean interactive_arg;
+static gboolean interactive;
 /* If true, control all available media players */
 static gboolean select_all_players;
 /* If true, list all available players' names and exit. */
@@ -796,7 +796,7 @@ static const GOptionEntry entries[] = {
      "Select all available players to be controlled", NULL},
     {"ignore-player", 'i', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING, &ignore_player_arg,
      "A comma separated list of names of players to ignore.", "IGNORE"},
-    {"interactive", 'I', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE, &interactive_arg,
+    {"interactive", 'I', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE, &interactive,
      "Run playerctl in interactive mode.", NULL},
     {"format", 'f', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING, &format_string_arg,
      "A format string for printing properties and metadata", NULL},
@@ -853,7 +853,7 @@ static gboolean parse_setup_options(int argc, char *argv[], GError **error) {
         return FALSE;
     }
 
-    if (command_arg == NULL && !print_version_and_exit && !list_all_players_and_exit && !interactive_arg) {
+    if (command_arg == NULL && !print_version_and_exit && !list_all_players_and_exit && !interactive) {
         gchar *help = g_option_context_get_help(context, TRUE, NULL);
         printf("%s\n", help);
         g_option_context_free(context);
@@ -1170,7 +1170,7 @@ int main(int argc, char *argv[]) {
     }
 
     const struct player_command *player_cmd = NULL;
-	if (!interactive_arg) {
+	if (!interactive) {
 		num_commands = g_strv_length(command_arg);
 		player_cmd = get_player_command(command_arg, num_commands, &error);
 		if (error != NULL) {
@@ -1247,11 +1247,11 @@ int main(int argc, char *argv[]) {
         if (follow) {
             playerctl_player_manager_manage_player(manager, player);
             init_managed_player(player, player_cmd);
-        } else if (interactive_arg) {
+        } else if (interactive) {
 			g_debug("running in interactive mode");
 			// this function blocks, so this is highly problematic if dealing
 			// with multiple players
-			handle_interactive(player);
+			init_interactive(player);
 		} else {
             gchar *output = NULL;
             g_debug("executing command %s", player_cmd->name);

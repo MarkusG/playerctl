@@ -22,6 +22,6 @@
 
 #include "playerctl-player.h"
 
-int handle_interactive(PlayerctlPlayer*);
+int init_interactive(PlayerctlPlayer*);
 
 #endif /* __PLAYERCTL_INTERACTIVE_H__ */
