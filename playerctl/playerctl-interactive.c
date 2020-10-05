@@ -31,7 +31,24 @@ int handle_interactive(void) {
 	tcsetattr(STDIN_FILENO, TCSANOW, &new);
 	char c;
 	while ((c = getchar())) {
-		printf("%d\n", c);
+		// arrow key codes are in the form \033[X where X is direction
+		if (c == '\033') {
+			getchar(); // skip [
+			switch (getchar()) {
+				case 65:
+					printf("UP\n");
+					break;
+				case 66:
+					printf("DOWN\n");
+					break;
+				case 67:
+					printf("RIGHT\n");
+					break;
+				case 68:
+					printf("LEFT\n");
+					break;
+			}
+		}
 	}
 	tcsetattr(STDIN_FILENO, TCSANOW, &old);
 	return 0;
