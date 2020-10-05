@@ -20,6 +20,8 @@
 #ifndef __PLAYERCTL_INTERACTIVE_H__
 #define __PLAYERCTL_INTERACTIVE_H__
 
-int handle_interactive(void);
+#include "playerctl-player.h"
+
+int handle_interactive(PlayerctlPlayer*);
 
 #endif /* __PLAYERCTL_INTERACTIVE_H__ */

@@ -21,7 +21,9 @@
 #include <unistd.h>
 #include <termios.h>
 
-int handle_interactive(void) {
+#include "playerctl-player.h"
+
+int handle_interactive(PlayerctlPlayer *player) {
 	// get input character-by-character
 	struct termios old, new;
 	tcgetattr(STDIN_FILENO, &new);
@@ -31,6 +33,9 @@ int handle_interactive(void) {
 	tcsetattr(STDIN_FILENO, TCSANOW, &new);
 	char c;
 	while ((c = getchar())) {
+		if (c == ' ') {
+			 playerctl_player_play_pause(player, NULL);
+		}
 		// arrow key codes are in the form \033[X where X is direction
 		if (c == '\033') {
 			getchar(); // skip [

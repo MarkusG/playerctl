@@ -1169,20 +1169,16 @@ int main(int argc, char *argv[]) {
         exit(result);
     }
 
-	if (interactive_arg) {
-		g_debug("running in interactive mode");
-		int result = handle_interactive();
-		exit(result);
+    const struct player_command *player_cmd = NULL;
+	if (!interactive_arg) {
+		num_commands = g_strv_length(command_arg);
+		player_cmd = get_player_command(command_arg, num_commands, &error);
+		if (error != NULL) {
+			g_printerr("Could not execute command: %s\n", error->message);
+			g_clear_error(&error);
+			exit(1);
+		}
 	}
-
-    num_commands = g_strv_length(command_arg);
-
-    const struct player_command *player_cmd = get_player_command(command_arg, num_commands, &error);
-    if (error != NULL) {
-        g_printerr("Could not execute command: %s\n", error->message);
-        g_clear_error(&error);
-        exit(1);
-    }
 
     if (format_string_arg != NULL) {
         formatter = playerctl_formatter_new(format_string_arg, &error);
@@ -1251,7 +1247,12 @@ int main(int argc, char *argv[]) {
         if (follow) {
             playerctl_player_manager_manage_player(manager, player);
             init_managed_player(player, player_cmd);
-        } else {
+        } else if (interactive_arg) {
+			g_debug("running in interactive mode");
+			// this function blocks, so this is highly problematic if dealing
+			// with multiple players
+			handle_interactive(player);
+		} else {
             gchar *output = NULL;
             g_debug("executing command %s", player_cmd->name);
             gboolean result = player_cmd->func(player, command_arg, num_commands, &output, &error);
