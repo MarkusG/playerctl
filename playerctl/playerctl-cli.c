@@ -29,6 +29,7 @@
 
 #include "playerctl-common.h"
 #include "playerctl-formatter.h"
+#include "playerctl-interactive.h"
 #include "playerctl-player-private.h"
 
 #define LENGTH(array) (sizeof array / sizeof array[0])
@@ -852,7 +853,7 @@ static gboolean parse_setup_options(int argc, char *argv[], GError **error) {
         return FALSE;
     }
 
-    if (command_arg == NULL && !print_version_and_exit && !list_all_players_and_exit) {
+    if (command_arg == NULL && !print_version_and_exit && !list_all_players_and_exit && !interactive_arg) {
         gchar *help = g_option_context_get_help(context, TRUE, NULL);
         printf("%s\n", help);
         g_option_context_free(context);
@@ -1167,6 +1168,12 @@ int main(int argc, char *argv[]) {
         int result = handle_list_all_flag();
         exit(result);
     }
+
+	if (interactive_arg) {
+		g_debug("running in interactive mode");
+		int result = handle_interactive();
+		exit(result);
+	}
 
     num_commands = g_strv_length(command_arg);
 

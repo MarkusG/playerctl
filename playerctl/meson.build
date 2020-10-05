@@ -14,6 +14,7 @@ playerctl_generated = gnome.gdbus_codegen(
 
 headers = [
   'playerctl.h',
+  'playerctl-interactive.h',
   'playerctl-player.h',
   'playerctl-player-manager.h',
   'playerctl-player-name.h',
@@ -22,6 +23,7 @@ headers = [
 
 playerctl_sources = [
   'playerctl-player-name.c',
+  'playerctl-interactive.c',
   'playerctl-formatter.c',
   'playerctl-player.c',
   'playerctl-common.c',
@@ -70,7 +72,8 @@ playerctl_shared_link = declare_dependency(
 
 playerctl_executable = executable(
   'playerctl',
-  'playerctl-cli.c', enums,
+# TODO this is funky so ask about how to fix it
+  'playerctl-cli.c', 'playerctl-interactive.c', enums,
   dependencies: playerctl_shared_link,
   include_directories: configuration_inc,
   install: true,
