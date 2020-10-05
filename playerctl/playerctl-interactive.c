@@ -18,8 +18,21 @@
  */
 
 #include <stdio.h>
+#include <unistd.h>
+#include <termios.h>
 
 int handle_interactive(void) {
-	printf("Hello world!\n");
+	// get input character-by-character
+	struct termios old, new;
+	tcgetattr(STDIN_FILENO, &new);
+	old = new;
+	new.c_lflag &= ~ICANON; // canonical mode (char by char)
+	new.c_lflag &= ~ECHO; // echo off
+	tcsetattr(STDIN_FILENO, TCSANOW, &new);
+	char c;
+	while ((c = getchar())) {
+		printf("%d\n", c);
+	}
+	tcsetattr(STDIN_FILENO, TCSANOW, &old);
 	return 0;
 }
